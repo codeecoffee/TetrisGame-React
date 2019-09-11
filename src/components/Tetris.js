@@ -11,6 +11,7 @@ import Display from './Display';
 import StartButton from './StartButton';
 
 //custom Hooks
+import { useInterval} from '../hooks/useInterval';
 import { usePlayer } from '../hooks/usePlayer';
 import { useStage } from '../hooks/useStage';
 
@@ -36,6 +37,7 @@ const Tetris =() => {
   {
     //Reset everything 
     setStage(createStage());
+    setDropTime(1000);
     resetPlayer();
     setGameOver(false);
   }
@@ -56,9 +58,22 @@ const Tetris =() => {
     }
   }
 
+  const keyUp= ({ keyCode }) =>
+  {
+    if(!gameOver)
+    {
+      if(keyCode === 40)
+      {
+        console.log("interval on")
+        setDropTime(1000);
+      }
+    }
+  }
   
   const dropPlayer= ()=>
   {
+    console.log("interval off")
+    setDropTime(null);
     drop();
   }
   const move= ({ keyCode}) =>
@@ -83,9 +98,21 @@ const Tetris =() => {
     }
   }
 
+  //setting up the intervals
+  useInterval(()=>
+  {
+    drop();
+  },dropTime)
+
   return(
     //Got to set role to button otherwise it wont respond to keypress
-    <StyledTetrisWrapper role= "button" tabIndex="0" onKeyDown={e=>move(e)}>
+    <StyledTetrisWrapper 
+      role= "button" 
+      tabIndex="0" 
+      onKeyDown={e=>move(e)} 
+      onKeyUp= {keyUp}
+    >
+
       <StyledTetris>
         <Stage stage= {stage} />
         <aside>
