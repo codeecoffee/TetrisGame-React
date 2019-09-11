@@ -5,6 +5,7 @@ export const useStage = (player, resetPlayer) =>
 {
   const [stage, setStage] = useState(createStage());
   const [rowsCleared, setRowsCleared] = useState(0);
+
   useEffect(()=>
   {
     setRowsCleared(0);
@@ -46,7 +47,10 @@ export const useStage = (player, resetPlayer) =>
       });
       //Check if collided 
       if(player.collided)
+      {   
         resetPlayer();
+        return sweepRows(newStage);
+      }
       return newStage;
     };
     setStage(prev=> updateStage(prev));
